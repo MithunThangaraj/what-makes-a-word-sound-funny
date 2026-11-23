@@ -1914,15 +1914,18 @@ f_up_r <- f_tab %>% filter(target == "median", pct_top10 >= 90, spearman_value_s
 f_dn_r <- f_tab %>% filter(target == "median", pct_top10 >= 90, spearman_value_shap < 0) %>% pull(feature)
 
 paras <- c(
-  paste0("This study asks whether the sounds of English words predict how funny they are rated, and whether this ",
-         "effect survives controls for word frequency, iconicity and meaning. Sound symbolism, the association between ",
-         "speech sounds and meanings, has been documented for size, shape and other perceptual qualities, and challenges ",
-         "the view that the link between sound and meaning is purely arbitrary. Humor offers a useful test case. ",
-         "Engelthaler and Hills (2018) collected humor ratings for 4,997 English words, and Kilpatrick and Flaksman (2025) ",
-         "showed that humorous words have higher phonemic surprisal and are more memorable despite their positive valence. ",
-         "However, funny words also tend to be rare and to carry distinctive meanings, so it is unclear whether specific ",
-         "sounds, rather than frequency or meaning, drive humor ratings."),
-  paste0("We build XGBoost classifiers (Chen & Guestrin, 2016) on phoneme proportions and compare them with models that ",
+  paste0("Why does a word like ", funny_words[2], " sound funnier than ", ex_of(stable_u_ph, FALSE)[1], "? Some words seem ",
+         "funny partly because of how they sound. Linguists call links between speech sounds and meanings sound symbolism: ",
+         "for example, people tend to judge the made-up word mil as smaller than mal (Sapir, 1929). If sound symbolism also ",
+         "applies to humor, the sounds in a word should help predict how funny people find it."),
+  paste0("Engelthaler and Hills (2018) asked people to rate 4,997 English words for humor on a scale from 1 to 5, and ",
+         "Kilpatrick and Flaksman (2025) showed that funny words contain more unexpected sound sequences (higher phonemic ",
+         "surprisal) and are easier to remember, even though their meanings are positive. However, funny words also tend to be ",
+         "rare and to have funny meanings, so sound, frequency and meaning are tangled together. This study asks whether ",
+         "specific sounds predict humor ratings after word frequency, iconicity and meaning are taken into account."),
+  paste0("In simple terms, we train a computer model to tell funnier words from less funny ones using only their sounds, ",
+         "and then test whether adding sounds improves a model that already knows each word's meaning and frequency. ",
+         "Technically, we build XGBoost classifiers (Chen & Guestrin, 2016) on phoneme proportions and compare them with models that ",
          "add lexical controls and meaning ratings, using nested, repeated cross-validation with permutation baselines. ",
          "We also test a phonological feature model and word-position features, and use SHAP values (Lundberg & Lee, 2017) ",
          "to identify which sounds push words toward funny or not funny."),
@@ -1951,7 +1954,7 @@ paras <- c(
          "Adding surprisal, iconicity and length, and then frequency, raised AUC to ", rt_("median", "C"), " and ",
          rt_("extreme", "C"), " (", pv(max(ab_m$p, ab_e$p, bc_m$p, bc_e$p)), "). Crucially, adding phonemes to the meaning model ",
          "raised AUC from ", rt_("median", "M"), " to ", rt_("median", "MP"), " (median split) and from ", rt_("extreme", "M"),
-         " to ", rt_("extreme", "MP"), " (extreme groups); M+P outperformed M in ", svm_m$folds_better, " and ",
+         " to ", rt_("extreme", "MP"), " (extreme groups; Figure 1); M+P outperformed M in ", svm_m$folds_better, " and ",
          svm_e$folds_better, " of ", svm_m$n_folds, " folds (", pv(max(svm_m$p, svm_e$p)), "), and the gain held when NRC emotion ",
          "associations were added (N = ", format(n_meaning_nrc, big.mark = ","), "; ", nrc_m$folds_better, " of ", nrc_m$n_folds,
          " folds, ", pv(nrc_m$p), "). In the residual test, phonemes predicted humor left unexplained by meaning and frequency ",
@@ -1994,6 +1997,7 @@ REPORT_REFS <- c(
   "Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. NeurIPS 30.",
   paste0("R Core Team (", r_year, "). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria."),
   "Robin, X., Turck, N., Hainard, A., Tiberti, N., Lisacek, F., Sanchez, J.-C., & Müller, M. (2011). pROC: An open-source package for R and S+ to analyze and compare ROC curves. BMC Bioinformatics, 12, 77.",
+  "Sapir, E. (1929). A study in phonetic symbolism. Journal of Experimental Psychology, 12(3), 225-239.",
   "Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. Behavior Research Methods, 45(4), 1191-1207.",
   "Weide, R. (1998). The CMU Pronouncing Dictionary. Carnegie Mellon University.",
   "Winter, B., Lupyan, G., Perry, L. K., Dingemanse, M., & Perlman, M. (2024). Iconicity ratings for 14,000+ English words. Behavior Research Methods, 56, 1640-1655."
@@ -2008,6 +2012,8 @@ report <- list(
                 header = names(t1), rows = tab_rows(t1)),
   table2 = list(caption = "Table 2: Phonological feature importance (mean |SHAP| over 50 test folds) and direction in model F (median split).",
                 header = names(t2), rows = tab_rows(t2)),
+  figure = list(path = "poster_fig_sound_vs_meaning.png", after_paragraph = 5,
+                caption = "Figure 1: Prediction score (AUC) of the meaning model with and without word sounds, on the same words; mean ± SD over 50 cross-validation test folds; dashed line = guessing."),
   references = REPORT_REFS
 )
 jsonlite::write_json(report, file.path(OUT, "report_content.json"), auto_unbox = TRUE, pretty = TRUE)

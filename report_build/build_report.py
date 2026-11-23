@@ -24,7 +24,8 @@ HERE = Path(__file__).resolve().parent
 CONTENT = HERE.parent / "poster_outputs" / "report_content.json"
 OUT = HERE / "EL161_report_Mithun.docx"
 URL = sys.argv[1] if len(sys.argv) > 1 else ""
-FONT, SIZE, REF_SIZE = "Times New Roman", 11.5, 10.5
+FONT, SIZE, REF_SIZE = "Times New Roman", 11.5, 10
+FIG_WIDTH_CM = 8.5
 
 
 def style_run(run, size=SIZE, bold=False, italic=False):
@@ -117,8 +118,8 @@ def main():
     doc = Document()
     sec = doc.sections[0]
     sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
-    sec.left_margin = sec.right_margin = Cm(2.3)
-    sec.top_margin = sec.bottom_margin = Cm(2.0)
+    sec.left_margin = sec.right_margin = Cm(2.0)
+    sec.top_margin = sec.bottom_margin = Cm(1.7)
     normal = doc.styles["Normal"]; normal.font.name = FONT; normal.font.size = Pt(SIZE)
     normal.element.rPr.rFonts.set(qn("w:eastAsia"), FONT)
     normal.paragraph_format.space_after = Pt(0)
@@ -129,7 +130,8 @@ def main():
     p = para(doc, WD_ALIGN_PARAGRAPH.CENTER, after=0); style_run(p.add_run(d["author"]))
     p = para(doc, WD_ALIGN_PARAGRAPH.CENTER, after=8); style_run(p.add_run(d["affiliation"]))
 
-    for text in d["paragraphs"]:
+    fig = d.get("figure")
+    for n, text in enumerate(d["paragraphs"], start=1):
         p = para(doc, after=6)
         if "{LINK}" in text:
             before, rest = text.split("{LINK}", 1)
@@ -143,6 +145,13 @@ def main():
             style_run(p.add_run(after))
         else:
             style_run(p.add_run(text))
+        if fig and n == fig["after_paragraph"]:
+            fp = para(doc, WD_ALIGN_PARAGRAPH.CENTER, after=2)
+            fp.add_run().add_picture(str(CONTENT.parent / fig["path"]), width=Cm(FIG_WIDTH_CM))
+            cp_ = para(doc, WD_ALIGN_PARAGRAPH.CENTER, after=8)
+            label, rest = fig["caption"].split(":", 1)
+            style_run(cp_.add_run(label + ":"), size=10, bold=True)
+            style_run(cp_.add_run(rest), size=10)
 
     outer = doc.add_table(rows=1, cols=2)
     no_borders(outer)
