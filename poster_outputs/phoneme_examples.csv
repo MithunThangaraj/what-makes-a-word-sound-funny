@@ -1,0 +1,11 @@
+target,model,feature,n_words_with,mean_shap_with,spearman_value_shap,mean_abs_shap,rank,leaning,examples,phoneme
+median,A,d_UW,298,0.4987490682543924,0.40601532504695714,0.06653306277857952,6,funny,"booty (4.32), hooter (4.12), booby (4.07), oomph (3.93), buffoon (3.89), douche (3.86), oodles (3.84), fruitcake (3.83)",UW
+median,A,d_G,347,0.29951939804899513,0.45907954363040027,0.04528983940209526,9,funny,"gaggle (3.82), chug (3.73), dingo (3.68), boogie (3.68), groin (3.65), gobble (3.65), jiggle (3.65), piggy (3.56)",G
+median,A,d_W,279,0.20671519394738658,0.4126443311110188,0.02558804078629879,16,funny,"waddle (4.05), whimsy (3.80), weasel (3.69), quickie (3.69), weirdo (3.68), wallop (3.67), whiz (3.61), wad (3.59)",W
+median,A,d_P,818,0.1473189021953698,0.3119134347833377,0.06362743594489251,7,funny,"rump (3.74), pooch (3.68), wallop (3.67), yap (3.66), panties (3.65), polka (3.59), bop (3.58), striptease (3.57)",P
+median,A,d_NG,210,0.1408839794987857,0.3623169852598844,0.013153037633671379,25,funny,"tinkle (3.96), funk (3.75), hanky (3.74), dingo (3.68), honky (3.56), dinghy (3.53), dumpling (3.50), spunk (3.43)",NG
+median,A,d_EY,410,-0.4098247889065888,-0.49794775692452625,0.0734439960398884,4,unfunny,"rape (1.18), pain (1.39), hate (1.44), slave (1.48), grade (1.53), racist (1.54), plague (1.58), dismay (1.59)",EY
+median,A,d_EH,547,-0.393356175337266,-0.5650106495884399,0.09188451551126987,1,unfunny,"torment (1.31), death (1.32), nightmare (1.33), neglect (1.38), revenge (1.44), terror (1.44), distress (1.48), dead (1.51)",EH
+median,A,d_TH,116,-0.39068300761924735,-0.2739576865586915,0.019954703958376233,21,unfunny,"death (1.32), theft (1.57), bloodbath (1.61), loathing (1.65), author (1.67), health (1.68), breath (1.73), anthrax (1.76)",TH
+median,A,d_AY,333,-0.2799901880554533,-0.4528690099390722,0.04126995031642364,10,unfunny,"nightmare (1.33), dislike (1.46), blind (1.57), die (1.67), silence (1.68), cry (1.70), typhoid (1.71), liar (1.73)",AY
+median,A,d_V,207,-0.25720551757834814,-0.3620969701812267,0.023735221887109664,17,unfunny,"divorce (1.41), convict (1.42), revenge (1.44), slave (1.48), grievance (1.56), victim (1.57), conserve (1.58), grave (1.60)",V
