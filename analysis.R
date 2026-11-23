@@ -5,10 +5,10 @@
 # EL161 Machine Learning for Linguistics, University of Aizu
 #
 # Runs top to bottom in RStudio (Source) or from a terminal:
-#   Rscript poster_outputs/analysis.R
+#   Rscript analysis.R
 #
-# Input : ../Master.csv   (the project folder that contains poster_outputs/)
-# Output: poster_outputs/  (PNG figures, results_table.csv, results.md, ...)
+# Input : data/Master.csv, data/cmudict.dict
+# Output: output/  (PNG figures, CSV tables, results.md, ...)
 #
 # Pipeline
 #   1. Cleaning           5. Nested, repeated, stratified CV + tuning
@@ -40,7 +40,7 @@ suppressPackageStartupMessages({
 })
 
 # Locate the project folder whether the script is sourced in RStudio or run
-# with Rscript. The data file lives one level above poster_outputs/.
+# with Rscript. Data are read from data/, outputs go to output/.
 get_script_dir <- function() {
   if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
     p <- tryCatch(rstudioapi::getActiveDocumentContext()$path, error = function(e) "")
@@ -51,9 +51,9 @@ get_script_dir <- function() {
   getwd()
 }
 SCRIPT_DIR <- get_script_dir()
-ROOT <- if (basename(SCRIPT_DIR) == "poster_outputs") dirname(SCRIPT_DIR) else SCRIPT_DIR
-OUT  <- file.path(ROOT, "poster_outputs")
-DATA <- file.path(ROOT, "Master.csv")
+ROOT <- SCRIPT_DIR
+OUT  <- file.path(ROOT, "output")
+DATA <- file.path(ROOT, "data", "Master.csv")
 dir.create(OUT, showWarnings = FALSE, recursive = TRUE)
 if (!file.exists(DATA)) stop("Cannot find Master.csv at ", DATA)
 msg("Project folder: ", ROOT)
@@ -184,7 +184,7 @@ dat <- dat %>% distinct(Word, .keep_all = TRUE)
 # (seed 123) is compared with CMUdict; every word is also checked. If any
 # sampled word fails to match, counts are rebuilt from CMUdict (first
 # pronunciation) for all words found in it.
-CMU_FILE <- file.path(ROOT, "cmudict.dict")
+CMU_FILE <- file.path(ROOT, "data", "cmudict.dict")
 cmu_ran <- file.exists(CMU_FILE)
 cmu_rebuilt <- FALSE
 if (cmu_ran) {
@@ -1883,7 +1883,7 @@ if (poster_words > 400) msg("  WARNING: poster_text.md body is over 400 words")
 
 # ---------------------------------------------------------------------------
 # 10. Course report (2-page abstract in the style of the course's Report Example)
-#     Writes report_content.json; ../report_build/build_report.py turns it into
+#     Writes report_content.json, which was turned into
 #     a .docx and PDF. Every number is taken from objects computed above.
 # ---------------------------------------------------------------------------
 msg("STEP 10: writing report_content.json")
